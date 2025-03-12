@@ -33,15 +33,17 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
 
-    @Value("${spring.kafka.topic.orchestrator}")
-    private String orchestrator;
-
-    @Value("${spring.kafka.topic.product-validation-success}")
-    private String productValidationSuccess;
+    @Value("${spring.kafka.topic.product-validation-start}")
+    private String productValidationStartTopic;
 
     @Value("${spring.kafka.topic.product-validation-fail}")
-    private String productValidationFail;
+    private String productValidationFailTopic;
 
+    @Value("${spring.kafka.topic.payment-success}")
+    private String paymentSuccessTopic;
+
+    @Value("${spring.kafka.topic.notify-ending}")
+    private String notifyEndingTopic;
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerProps());
@@ -76,18 +78,24 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic orchestratorTopic() {
-        return buildTopic(orchestrator);
-    }
-
-    @Bean
     public NewTopic productValidationSuccessTopic() {
-        return buildTopic(productValidationSuccess);
+        return buildTopic(productValidationStartTopic);
     }
 
     @Bean
     public NewTopic productValidationFailTopic() {
-        return buildTopic(productValidationFail);
+        return buildTopic(productValidationFailTopic);
+    }
+
+    @Bean
+    public NewTopic paymentSuccessTopic() {
+        return buildTopic(paymentSuccessTopic);
+    }
+
+
+    @Bean
+    public NewTopic notifyEndingTopic() {
+        return buildTopic(notifyEndingTopic);
     }
 
     private NewTopic buildTopic(String name) {
