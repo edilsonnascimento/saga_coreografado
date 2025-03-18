@@ -44,6 +44,7 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.topic.notify-ending}")
     private String notifyEndingTopic;
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerProps());

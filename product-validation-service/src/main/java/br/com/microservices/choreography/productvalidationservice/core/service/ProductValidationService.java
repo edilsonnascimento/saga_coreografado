@@ -9,6 +9,7 @@ import br.com.microservices.choreography.productvalidationservice.core.model.Val
 import br.com.microservices.choreography.productvalidationservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ProductRepository;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ValidationRepository;
+import br.com.microservices.choreography.productvalidationservice.core.saga.SagaExecutionController;
 import br.com.microservices.choreography.productvalidationservice.core.utils.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,9 @@ public class ProductValidationService {
 
     private static final String CURRENT_SOURCE = "PRODUCT_VALIDATION_SERVICE";
 
-    private final JsonUtil jsonUtil;
-    private final KafkaProducer kafkaProducer;
     private final ProductRepository productRepository;
     private final ValidationRepository validationRepository;
+    private final SagaExecutionController sagaExecutionController;
 
     public void validateExistingEventProduct(Event event) {
         try {
@@ -39,7 +39,7 @@ public class ProductValidationService {
             log.error("Error trying to validate products: ", ex);
             handleFailCurrentNotExecuted(event, ex.getMessage());
         }
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "");
+        sagaExecutionController.handleSaga(event);
     }
 
     private void checkCurrentValidation(Event event) {
@@ -107,7 +107,7 @@ public class ProductValidationService {
         event.setStatus(ESagaStatus.FAIL);
         event.setSource(CURRENT_SOURCE);
         addHistory(event, "Rollback executed on product validation!");
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "");
+        sagaExecutionController.handleSaga(event);
     }
 
     private void changeValidationToFail(Event event) {
