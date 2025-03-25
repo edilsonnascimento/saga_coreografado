@@ -1,8 +1,8 @@
 package br.com.microservices.choreography.paymentservice.core.saga;
 
-import br.com.microservices.choreography.productvalidationservice.core.dto.Event;
-import br.com.microservices.choreography.productvalidationservice.core.producer.KafkaProducer;
-import br.com.microservices.choreography.productvalidationservice.core.utils.JsonUtil;
+import br.com.microservices.choreography.paymentservice.core.dto.Event;
+import br.com.microservices.choreography.paymentservice.core.producer.KafkaProducer;
+import br.com.microservices.choreography.paymentservice.core.utils.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,6 @@ public class SagaExecutionController {
 
     @Value("${spring.kafka.topic.notify-ending}")
     private String notifyEndingTopic;
-
 
     public void handleSaga(Event event) {
 

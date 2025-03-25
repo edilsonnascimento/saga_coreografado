@@ -42,8 +42,8 @@ public class KafkaConfig {
     @Value("${spring.kafka.topic.inventory-success")
     private String inventorySuccessTopic;
 
-    @Value("${spring.kafka.topic.product-validation-fail")
-    private String productValidationFailTopic;
+    @Value("${spring.kafka.topic.notify-ending}")
+    private String notifyEndingTopic;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
