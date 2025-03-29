@@ -91,7 +91,7 @@ public class ProductValidationService {
                 .source(event.getSource())
                 .status(event.getStatus())
                 .message(message)
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
         event.addHistory(history);
     }

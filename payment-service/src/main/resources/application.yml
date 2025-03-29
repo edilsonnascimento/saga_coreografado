@@ -8,7 +8,7 @@ spring:
     topic:
       payment-success: payment-success
       payment-fail: payment-fail
-      product_validation_fail: product_validation_fail
+      product_validation_fail: product-validation-fail
       inventory-success: inventory-success
     consumer:
       group-id: payment-group

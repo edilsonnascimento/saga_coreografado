@@ -21,8 +21,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KafkaConfig {
 
-    private static final Integer REPLICA_COUNT = 1;
     private static final Integer PARTITION_COUNT = 1;
+    private static final Integer REPLICA_COUNT = 1;
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -39,11 +39,11 @@ public class KafkaConfig {
     @Value("${spring.kafka.topic.payment-fail}")
     private String paymentFailTopic;
 
-    @Value("${spring.kafka.topic.inventory-success")
-    private String inventorySuccessTopic;
+    @Value("${spring.kafka.topic.product-validation-fail}")
+    private String productValidationFailTopic;
 
-    @Value("${spring.kafka.topic.notify-ending}")
-    private String notifyEndingTopic;
+    @Value("${spring.kafka.topic.inventory-success}")
+    private String inventorySuccessTopic;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -78,6 +78,14 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory);
     }
 
+    private NewTopic buildTopic(String name) {
+        return TopicBuilder
+                .name(name)
+                .partitions(PARTITION_COUNT)
+                .replicas(REPLICA_COUNT)
+                .build();
+    }
+
     @Bean
     public NewTopic paymentSuccessTopic() {
         return buildTopic(paymentSuccessTopic);
@@ -89,20 +97,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic inventorySuccessTopic() {
-        return buildTopic(inventorySuccessTopic);
-    }
-
-    @Bean
     public NewTopic productValidationFailTopic() {
         return buildTopic(productValidationFailTopic);
     }
 
-    private NewTopic buildTopic(String name) {
-        return TopicBuilder
-                .name(name)
-                .replicas(REPLICA_COUNT)
-                .partitions(PARTITION_COUNT)
-                .build();
+    @Bean
+    public NewTopic inventorySuccessTopic() {
+        return buildTopic(inventorySuccessTopic);
     }
 }

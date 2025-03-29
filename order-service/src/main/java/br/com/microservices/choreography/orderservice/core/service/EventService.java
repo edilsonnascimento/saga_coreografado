@@ -87,7 +87,7 @@ public class EventService {
                 .source(event.getSource())
                 .status(event.getStatus())
                 .message(message)
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
         event.addToHistory(history);
     }

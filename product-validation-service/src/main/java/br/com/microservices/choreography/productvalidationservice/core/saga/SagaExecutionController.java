@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SagaExecutionController {
-
     private static final String SAGA_LOG_ID = "ORDER ID: %s | TRANSACTION ID %s | EVENT ID %s";
 
     private final JsonUtil jsonUtil;
@@ -27,9 +26,7 @@ public class SagaExecutionController {
     @Value("${spring.kafka.topic.notify-ending}")
     private String notifyEndingTopic;
 
-
     public void handleSaga(Event event) {
-
         switch (event.getStatus()) {
             case SUCCESS -> handleSuccess(event);
             case ROLLBACK_PENDING -> handleRollbackPending(event);
@@ -61,7 +58,6 @@ public class SagaExecutionController {
     }
 
     private String createSagaId(Event event) {
-        return String.format(SAGA_LOG_ID,
-                event.getPayload().getId(), event.getTransactionId(), event.getId());
+        return String.format(SAGA_LOG_ID, event.getPayload().getId(), event.getTransactionId(), event.getId());
     }
 }

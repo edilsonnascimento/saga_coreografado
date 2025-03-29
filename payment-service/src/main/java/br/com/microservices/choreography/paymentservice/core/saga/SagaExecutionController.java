@@ -18,17 +18,16 @@ public class SagaExecutionController {
     private final JsonUtil jsonUtil;
     private final KafkaProducer producer;
 
-    @Value("${spring.kafka.topic.payment-success}")
-    private String paymentSuccessTopic;
+    @Value("${spring.kafka.topic.inventory-success}")
+    private String inventorySuccessTopic;
+
+    @Value("${spring.kafka.topic.payment-fail}")
+    private String paymentFailTopic;
 
     @Value("${spring.kafka.topic.product-validation-fail}")
     private String productValidationFailTopic;
 
-    @Value("${spring.kafka.topic.notify-ending}")
-    private String notifyEndingTopic;
-
     public void handleSaga(Event event) {
-
         switch (event.getStatus()) {
             case SUCCESS -> handleSuccess(event);
             case ROLLBACK_PENDING -> handleRollbackPending(event);
@@ -38,20 +37,20 @@ public class SagaExecutionController {
 
     private void handleSuccess(Event event) {
         log.info("### CURRENT SAGA: {} | SUCCESS | NEXT TOPIC {} | {}",
-                event.getSource(), paymentSuccessTopic, createSagaId(event));
-        sendEvent(event, paymentSuccessTopic);
+                event.getSource(), inventorySuccessTopic, createSagaId(event));
+        sendEvent(event, inventorySuccessTopic);
     }
 
     private void handleRollbackPending(Event event) {
         log.info("### CURRENT SAGA: {} | SENDING TO ROLLBACK CURRENT SERVICE | NEXT TOPIC {} | {}",
-                event.getSource(), productValidationFailTopic, createSagaId(event));
-        sendEvent(event, productValidationFailTopic);
+                event.getSource(), paymentFailTopic, createSagaId(event));
+        sendEvent(event, paymentFailTopic);
     }
 
     private void handleFail(Event event) {
         log.info("### CURRENT SAGA: {} | SENDING TO ROLLBACK PREVIOUS SERVICE | NEXT TOPIC {} | {}",
-                event.getSource(), notifyEndingTopic, createSagaId(event));
-        sendEvent(event, notifyEndingTopic);
+                event.getSource(), productValidationFailTopic, createSagaId(event));
+        sendEvent(event, productValidationFailTopic);
     }
 
     private void sendEvent(Event event, String topic) {
@@ -60,7 +59,6 @@ public class SagaExecutionController {
     }
 
     private String createSagaId(Event event) {
-        return String.format(SAGA_LOG_ID,
-                event.getPayload().getId(), event.getTransactionId(), event.getId());
+        return String.format(SAGA_LOG_ID, event.getPayload().getId(), event.getTransactionId(), event.getId());
     }
 }
